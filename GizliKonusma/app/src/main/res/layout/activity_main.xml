@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_background"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_marginTop="32dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/videocall">
+
+    </ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Gizli Konusma"
+        android:textSize="64sp"
+        android:fontFamily="@font/secter">
+
+    </TextView>
+
+    <TextView
+        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Konuşmanı gizli yapmak istiyorsan"
+        android:textSize="18sp">
+
+    </TextView>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded_corner"
+        android:layout_marginHorizontal="40dp"
+        android:hint="kullanıcı adını gir"
+        android:paddingHorizontal="12dp"
+        android:layout_marginTop="16dp"
+        android:id="@+id/user_id_edit_text">
+
+    </EditText>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Konuşmayı Başlat"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/btn_back"
+        android:id="@+id/start_btn">
+    </androidx.appcompat.widget.AppCompatButton>
+
+</LinearLayout>
