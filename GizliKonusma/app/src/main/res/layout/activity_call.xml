@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/rounded_corner"
-            android:hint="Gizli Adı Gir"
+            android:hint="gizli adı gir"
             android:paddingHorizontal="12dp"
             android:layout_marginTop="16dp"
             android:layout_toLeftOf="@+id/voice_call_btn"

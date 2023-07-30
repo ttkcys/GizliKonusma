@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     Button startButton;
 
     private InterstitialAd mInterstitialAd;
-    private ConsentInformation consentInformation;
-    private ConsentForm consentForm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,77 +48,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        // Set tag for underage of consent. Here false means users are not underage.
-        ConsentRequestParameters params = new ConsentRequestParameters
-                .Builder()
-                .setTagForUnderAgeOfConsent(false)
-                .build();
-
-        consentInformation = UserMessagingPlatform.getConsentInformation(this);
-        consentInformation.requestConsentInfoUpdate(
-                this,
-                params,
-                new ConsentInformation.OnConsentInfoUpdateSuccessListener() {
-                    @Override
-                    public void onConsentInfoUpdateSuccess() {
-                        // The consent information state was updated.
-                        // You are now ready to check if a form is available.
-                    }
-                },
-                new ConsentInformation.OnConsentInfoUpdateFailureListener() {
-                    @Override
-                    public void onConsentInfoUpdateFailure(FormError formError) {
-                        // Handle the error.
-                    }
-                });
-
-        consentInformation.requestConsentInfoUpdate(
-                this,
-                params,
-                new ConsentInformation.OnConsentInfoUpdateSuccessListener() {
-                    @Override
-                    public void onConsentInfoUpdateSuccess() {
-                        // The consent information state was updated.
-                        // You are now ready to check if a form is available.
-                        if (consentInformation.isConsentFormAvailable()) {
-                            loadForm();
-                        }
-                    }
-                },
-                new ConsentInformation.OnConsentInfoUpdateFailureListener() {
-                    @Override
-                    public void onConsentInfoUpdateFailure(FormError formError) {
-                        // Handle the error.
-                    }
-                });
-
-
-
-
-        InterstitialAd.load(this,"ca-app-pub-5060997619686611~1878368195", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i(TAG, "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.d(TAG, loadAdError.toString());
-                        mInterstitialAd = null;
-                    }
-                });
+        setAds();
 
         userIdEditText = findViewById(R.id.user_id_edit_text);
         startButton = findViewById(R.id.start_btn);
 
         startButton.setOnClickListener((v)->{
+
+
+            if(mInterstitialAd != null){
+                mInterstitialAd.show(MainActivity.this);
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+                        startActivity(new Intent(MainActivity.this,CallActivity.class));
+                        mInterstitialAd = null;
+                        setAds();
+                    }
+                });
+            }else{
+                startActivity(new Intent(MainActivity.this,CallActivity.class));
+            }
+
             String userID = userIdEditText.getText().toString().trim();
             if(userID.isEmpty()){
                 return;
@@ -154,66 +104,24 @@ public class MainActivity extends AppCompatActivity {
         ZegoUIKitPrebuiltCallInvitationService.unInit();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (mInterstitialAd != null) {
-            mInterstitialAd.show(MainActivity.this);
-        } else {
-            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-        }
-        super.onBackPressed();
-    }
+    public void setAds(){
+        AdRequest adRequest = new AdRequest.Builder().build();
 
-    private void admob(){
-        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-            @Override
-            public void onAdClicked() {
-                // Called when a click is recorded for an ad.
-                Log.d(TAG, "Ad was clicked.");
-            }
-
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                // Called when ad is dismissed.
-                // Set the ad reference to null so you don't show the ad a second time.
-                Log.d(TAG, "Ad dismissed fullscreen content.");
-                mInterstitialAd = null;
-            }
-
-            @Override
-            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                // Called when ad fails to show.
-                Log.e(TAG, "Ad failed to show fullscreen content.");
-                mInterstitialAd = null;
-            }
-
-            @Override
-            public void onAdImpression() {
-                // Called when an impression is recorded for an ad.
-                Log.d(TAG, "Ad recorded an impression.");
-            }
-
-            @Override
-            public void onAdShowedFullScreenContent() {
-                // Called when ad is shown.
-                Log.d(TAG, "Ad showed fullscreen content.");
-            }
-        });
-    }
-
-    public void loadForm() {
-        UserMessagingPlatform.loadConsentForm(
-                this, new UserMessagingPlatform.OnConsentFormLoadSuccessListener() {
+        InterstitialAd.load(this,"ca-app-pub-5060997619686611~1878368195", adRequest,
+                new InterstitialAdLoadCallback() {
                     @Override
-                    public void onConsentFormLoadSuccess(ConsentForm consentForm) {
-                        MainActivity.this.consentForm = consentForm;
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
                     }
-                },
-                new UserMessagingPlatform.OnConsentFormLoadFailureListener() {
+
                     @Override
-                    public void onConsentFormLoadFailure(FormError formError) {
-                        // Handle the error.
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
                     }
                 });
     }
+
 }
